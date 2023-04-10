@@ -49,8 +49,8 @@ $viewModel = $block->getViewModel();
         route: 'street-1',
         locality: 'city',
         administrative_area_level_1: 'region',
-        country: 'country',
-        postal_code: 'zip'
+        country: 'country_id',
+        postal_code: 'postcode'
     }
     window.gm_authFailure = function () {
         document.getElementById('street').setAttribute('placeholder', '');
@@ -74,9 +74,13 @@ $viewModel = $block->getViewModel();
     }
 
     function initAutocomplete() {
+
+        for (const [key, value] of Object.entries(lookupElement)) {
+            if(element = document.getElementById(value)) {
+                element.replaceWith(element.cloneNode(true));
+            }
+        }
         var input = document.getElementById('street');
-        input.setAttribute('novalidate', 'novalidate');
-        input.setAttribute('wire:ignore', 'wire:ignore');
 
         input.addEventListener('focus', geolocate, true);
 
@@ -88,7 +92,6 @@ $viewModel = $block->getViewModel();
     }
 
     function fillInAddress() {
-        debugger;
         var place = autocomplete.getPlace();
 
         var street = [];
@@ -125,8 +128,8 @@ $viewModel = $block->getViewModel();
         }
         document.getElementById('city').value = city;
         if (region != '') {
-            if (document.getElementById('region_id')) {
-                var regionSelector = document.getElementById('region_id');
+            if (document.getElementById('region')) {
+                var regionSelector = document.getElementById('region');
                 for (i = 0; i < regionSelector.length; i++) {
                     if (regionSelector.options[i].text === region) {
                         regionSelector.selectedIndex = i;
@@ -134,12 +137,6 @@ $viewModel = $block->getViewModel();
                     }
                 }
             }
-            if (document.getElementById('region')) {
-                document.getElementById('region').value = region;
-
-            }
-
-
         }
     }
 
