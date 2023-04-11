@@ -22,6 +22,8 @@ You will need a Google API key that has been enabled with “Google Places API W
 Compatibility
 -------------
 - Magento >= 2.3
+- Hyva Theme ( by ProxiBlue )
+- Hyva Checkout ( by ProxiBlue )
 
 Installation Instructions
 -------------------------
