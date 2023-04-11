@@ -74,12 +74,6 @@ $viewModel = $block->getViewModel();
     }
 
     function initAutocomplete() {
-
-        for (const [key, value] of Object.entries(lookupElement)) {
-            if(element = document.getElementById(value)) {
-                element.replaceWith(element.cloneNode(true));
-            }
-        }
         var input = document.getElementById('street');
 
         input.addEventListener('focus', geolocate, true);
@@ -89,6 +83,7 @@ $viewModel = $block->getViewModel();
             {types: ['geocode']});
 
         autocomplete.addListener('place_changed', fillInAddress);
+
     }
 
     function fillInAddress() {
@@ -116,28 +111,47 @@ $viewModel = $block->getViewModel();
                     city = val;
                 } else {
                     var elementId = lookupElement[addressType];
-                    document.getElementById(elementId).value = val;
-                    if (addressType == 'country') {
-                        document.getElementById(elementId).dispatchEvent(new window.CustomEvent('change'));
-                    }
+                    element = document.getElementById(elementId);
+                    element.value = val;
+                    element.dispatchEvent(new Event('input'));
                 }
             }
         }
         if (street.length > 0) {
             document.getElementById('street').value = street.join(' ');
+            document.getElementById('street').dispatchEvent(new Event('input'));
         }
-        document.getElementById('city').value = city;
+        element = document.getElementById('city');
+        element.value = city;
+        element.dispatchEvent(new Event('input'));
+
         if (region != '') {
             if (document.getElementById('region')) {
                 var regionSelector = document.getElementById('region');
                 for (i = 0; i < regionSelector.length; i++) {
                     if (regionSelector.options[i].text === region) {
                         regionSelector.selectedIndex = i;
+                        regionSelector.dispatchEvent(new Event('change'));
                         break;
                     }
                 }
             }
         }
+        /**
+         * we need a small delay to allow magewire to communicate with the elements and update the form
+         */
+        timeout = setTimeout(() => doSave(), 500)
+        removeElementsByClass("pac-container");
+    }
+
+    function doSave() {
+        clearTimeout(timeout);
+        window.dispatchEvent(
+            new CustomEvent('magewire:loader:start', { detail: { loading: true }})
+        );
+        magewire.find('checkout.shipping-details.address-form').save(true);
+
+        setTimeout(() => initAutocomplete(), 1000);
     }
 
     function geolocate() {

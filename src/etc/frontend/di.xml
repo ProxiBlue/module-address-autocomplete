@@ -17,4 +17,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Hyva\Checkout\Model\Form\EntityField\EavAttributeField">
+        <plugin name="shipperhq_module-address-autocomplete_hyva_checkout_disable_autosave" type="ShipperHQ\AddressAutocomplete\Plugin\HyvaCheckout\DisableFieldAutosave"/>
+    </type>
 </config>
