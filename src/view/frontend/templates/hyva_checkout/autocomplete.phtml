@@ -84,6 +84,22 @@ $viewModel = $block->getViewModel();
 
         autocomplete.addListener('place_changed', fillInAddress);
 
+        //attach event on billing address same as shipping to activate autocomplete on billing address
+        var billingAddressSameAsShipping = document.getElementById('billing-as-shipping');
+        if (billingAddressSameAsShipping) {
+            billingAddressSameAsShipping.addEventListener('change', function () {
+                if (this.checked) {
+                    debugger;
+                    var input = document.getElementsByClassName('street');
+                    input.addEventListener('focus', geolocate, true);
+                    autocomplete = new google.maps.places.Autocomplete(
+                        /** @type {!HTMLInputElement} */(document.getElementById('street-1')),
+                        {types: ['geocode']});
+                    autocomplete.addListener('place_changed', fillInAddress);
+                }
+            });
+        }
+
     }
 
     function fillInAddress() {
